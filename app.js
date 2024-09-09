@@ -16,7 +16,7 @@ searchform.addEventListener("submit", function(event) {
   const searchTerm = searchbox.value;
   if (searchTerm) {
     hideError();
-    localStorage.setItem("city", searchTerm);
+    makeLoader();
     getWeather(searchTerm);
   }
   else {
@@ -30,15 +30,17 @@ async function getWeather(searchTerm) {
       + searchTerm + "?unitGroup=us&key=" + apiKey + "&contentType=json", {
       mode: "cors"});
       const data = await response.json();
+      localStorage.setItem("city", searchTerm);
       updatePage(data);
   }
   catch {
     showError("Please try another search");
+    const weatherbox = document.querySelector("#weatherblock")
+    clearElement(weatherbox);
   }
 }
 
 function updatePage(data) {
-  console.log(data);
   //set weather variables
   const [city, state, country] = data.resolvedAddress.split(",");
   const temp = data.currentConditions.temp;
@@ -125,4 +127,12 @@ function hideError() {
   const errorbox = document.querySelector("#error");
   clearElement(errorbox);
   errorbox.style.display = "none";
+}
+
+function makeLoader() {
+  const weatherbox = document.querySelector("#weatherblock")
+  clearElement(weatherbox);
+  const loader = document.createElement("img");
+  loader.src = "./loading.gif";
+  weatherbox.appendChild(loader);
 }
