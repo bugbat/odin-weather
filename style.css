@@ -1,0 +1,38 @@
+html {
+  background-color: rgb(241, 241, 241);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+  width: 20rem;
+}
+
+form {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+#weatherblock {
+  display: flex;
+  flex-direction: column;
+;
+  background-color: antiquewhite;
+}
+
+#weatherheader {
+  padding: 0 1rem;
+  display: flex;
+  justify-content: space-between;
+  background-color: wheat;
+}
+
+#weathercontent {
+  padding: 0 1rem;
+}
