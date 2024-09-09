@@ -2,11 +2,25 @@
 const apiKey = "R4HTPHF2RC7SHGLWH7MVEZDBU";
 
 //dom elements
+const searchform = document.querySelector("form")
+const searchbox = document.querySelector("#citylookup");
+const searchbutton = document.querySelector("#search");
 
 //default data. figure out local storage to keep this
 let searchTerm = "arlington";
+getWeather(searchTerm);
 
-const theWeather = getWeather(searchTerm)
+searchform.addEventListener("submit", function(event) {
+  event.preventDefault();
+  searchTerm = searchbox.value;
+  if (searchTerm) {
+    hideError();
+    getWeather(searchTerm);
+  }
+  else {
+    showError("Please enter a city")
+  }
+})
 
 async function getWeather(searchTerm) {
   try {
@@ -17,7 +31,7 @@ async function getWeather(searchTerm) {
       updatePage(data);
   }
   catch {
-    console.error("something went wrong");
+    showError("Please try another search");
   }
 }
 
@@ -33,6 +47,8 @@ function updatePage(data) {
   
   //set up header
   const weatherheader = document.querySelector("#weatherheader");
+  clearElement(weatherheader);
+
   const location = document.createElement("h1");
   const icon = document.createElement("h1");
 
@@ -42,10 +58,14 @@ function updatePage(data) {
   weatherheader.append(location, icon);
 
   //set up content
-  const condition = document.createElement("p");
   const weathercontent = document.querySelector("#weathercontent");
+  clearElement(weathercontent);
+  
   const temperature = document.createElement("p");
   const precipitation = document.createElement("p");
+  const condition = document.createElement("p");
+
+  condition.classList.add("smallitalic");
 
   condition.textContent = dayDescription;
   temperature.textContent = temp + "° F";
@@ -77,4 +97,26 @@ function getWeatherEmoji(condition) {
     default:
       return "❓";
   }
+}
+
+function clearElement(element) {
+  while(element.firstChild) { 
+    element.removeChild(element.firstChild);
+  }
+}
+
+function showError(message) {
+  const errorbox = document.querySelector("#error");
+  const errormessage = document.createElement("p");
+  clearElement(errorbox);
+
+  errormessage.textContent = message;
+  errorbox.appendChild(errormessage);
+  errorbox.style.display = "flex";
+}
+
+function hideError() {
+  const errorbox = document.querySelector("#error");
+  clearElement(errorbox);
+  errorbox.style.display = "none";
 }
