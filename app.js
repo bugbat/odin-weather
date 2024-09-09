@@ -7,18 +7,20 @@ const searchbox = document.querySelector("#citylookup");
 const searchbutton = document.querySelector("#search");
 
 //default data. figure out local storage to keep this
-let searchTerm = "arlington";
-getWeather(searchTerm);
+if (localStorage.getItem("city")) {
+  getWeather(localStorage.getItem("city"));
+}
 
 searchform.addEventListener("submit", function(event) {
   event.preventDefault();
-  searchTerm = searchbox.value;
+  const searchTerm = searchbox.value;
   if (searchTerm) {
     hideError();
+    localStorage.setItem("city", searchTerm);
     getWeather(searchTerm);
   }
   else {
-    showError("Please enter a city")
+    showError("Please enter a city");
   }
 })
 
@@ -45,9 +47,12 @@ function updatePage(data) {
   const iconData = data.currentConditions.icon;
   const weatherIcon = getWeatherEmoji(iconData);
   
+  const weatherbox = document.querySelector("#weatherblock")
+  clearElement(weatherbox);
+
   //set up header
-  const weatherheader = document.querySelector("#weatherheader");
-  clearElement(weatherheader);
+  const weatherheader = document.createElement("div");
+  weatherheader.id = "weatherheader";
 
   const location = document.createElement("h1");
   const icon = document.createElement("h1");
@@ -58,13 +63,12 @@ function updatePage(data) {
   weatherheader.append(location, icon);
 
   //set up content
-  const weathercontent = document.querySelector("#weathercontent");
-  clearElement(weathercontent);
+  const weathercontent = document.createElement("div");
+  weathercontent.id = "weathercontent";
   
   const temperature = document.createElement("p");
   const precipitation = document.createElement("p");
   const condition = document.createElement("p");
-
   condition.classList.add("smallitalic");
 
   condition.textContent = dayDescription;
@@ -72,6 +76,8 @@ function updatePage(data) {
   precipitation.textContent = precipProb + "% chance of rain";
 
   weathercontent.append(temperature, precipitation, condition);
+
+  weatherbox.append(weatherheader, weathercontent);
 }
 
 function getWeatherEmoji(condition) {
